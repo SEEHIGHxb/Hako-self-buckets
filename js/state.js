@@ -40,7 +40,7 @@ const SEED_ITEMS = [
 ];
 
 const DEFAULT_PREFERENCES = {
-  theme: 'dark',
+  theme: 'light',
   weekStartsOnMonday: true,
   driftThresholdPct: 0.70,
   driftWeeksRequired: 2,

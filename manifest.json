@@ -1,12 +1,12 @@
 {
   "name": "Hako — Self-Buckets",
   "short_name": "Hako",
-  "description": "A personal life-strategy tracker built around the three-bucket framework. Sibling app to Midori.",
+  "description": "A personal life-strategy tracker built around the three-bucket framework. Washi-paper aesthetic, all data lives in your browser.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0e120e",
-  "theme_color": "#1e381b",
+  "background_color": "#f5efe6",
+  "theme_color": "#f5efe6",
   "orientation": "portrait",
   "icons": [
     {

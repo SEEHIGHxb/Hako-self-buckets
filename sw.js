@@ -3,7 +3,7 @@
  * Service Worker: offline-capable static cache.
  */
 
-const CACHE_NAME = 'hako-cache-v1';
+const CACHE_NAME = 'hako-cache-v2-washi';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

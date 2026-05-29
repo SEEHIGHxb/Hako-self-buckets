@@ -1,6 +1,6 @@
 /**
  * Hako — charts.js
- * Chart.js wrappers for the Dashboard tab. Theme-responsive.
+ * Chart.js wrappers for the Dashboard tab. Theme-responsive (washi/sumi).
  */
 
 let soulTallyChart = null;
@@ -10,21 +10,23 @@ let exerciseChart = null;
 function getThemeColors() {
   const isDark = HakoState.preferences.theme === 'dark';
   return {
-    text:        isDark ? '#b5cbb7' : '#2d5a27',
-    grid:        isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-    tooltipBg:   isDark ? 'rgba(20, 30, 20, 0.92)' : 'rgba(240, 245, 240, 0.95)',
-    tooltipText: isDark ? '#e2ebd5' : '#1e381b',
-    anchor:      '#4d9c4e',
-    soul:        '#a2d2a4',
-    floor:       '#cfa87b',
-    accent:      '#e07a5f',
+    text:        isDark ? '#a89c87' : '#7a6f60',
+    textStrong:  isDark ? '#f0e8d8' : '#2a2622',
+    grid:        isDark ? 'rgba(245, 239, 230, 0.06)' : 'rgba(42, 38, 34, 0.08)',
+    tooltipBg:   isDark ? '#322d27' : '#fbf6ee',
+    tooltipText: isDark ? '#f0e8d8' : '#2a2622',
+    tooltipBorder: isDark ? 'rgba(245, 239, 230, 0.18)' : 'rgba(42, 38, 34, 0.18)',
+    anchor:      '#6b8e4e',   // bamboo
+    soul:        '#d06a4c',   // persimmon
+    floor:       '#b8975a',   // tea gold
+    accent:      '#a83b28',   // rust
   };
 }
 
-// Pleasant per-item color palette for stacked bar.
+// Washi-friendly per-item palette for stacked bar (earth tones).
 const PALETTE = [
-  '#4d9c4e', '#a2d2a4', '#8ba88f', '#cfa87b', '#6d597a',
-  '#355070', '#e09f53', '#31572c', '#5a7d5b', '#e5989b',
+  '#6b8e4e', '#d06a4c', '#b8975a', '#a89e85', '#7c6f8f',
+  '#3d5d80', '#c89252', '#5a8a4a', '#a83b28', '#8d6e63',
 ];
 function colorForIndex(i) { return PALETTE[i % PALETTE.length]; }
 
@@ -32,6 +34,15 @@ function destroyAll() {
   if (soulTallyChart) { soulTallyChart.destroy(); soulTallyChart = null; }
   if (trendChart)     { trendChart.destroy();     trendChart = null; }
   if (exerciseChart)  { exerciseChart.destroy();  exerciseChart = null; }
+}
+
+const DEFAULT_FONT = "'Inter', sans-serif";
+
+function commonScale(colors) {
+  return {
+    font: { family: DEFAULT_FONT, size: 11, weight: '500' },
+    color: colors.text,
+  };
 }
 
 /* ---------- Soul stuff tally (current week) ---------- */
@@ -55,7 +66,7 @@ function renderSoulTally(canvasId, weekMondayIso) {
       datasets: [{
         data,
         backgroundColor: colors.soul,
-        borderRadius: 6,
+        borderRadius: 3,
         barThickness: 22,
       }],
     },
@@ -64,8 +75,8 @@ function renderSoulTally(canvasId, weekMondayIso) {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        x: { beginAtZero: true, max: 7, grid: { color: colors.grid }, ticks: { color: colors.text, stepSize: 1 } },
-        y: { grid: { display: false }, ticks: { color: colors.text } },
+        x: { beginAtZero: true, max: 7, grid: { color: colors.grid }, ticks: { ...commonScale(colors), stepSize: 1 } },
+        y: { grid: { display: false }, ticks: commonScale(colors) },
       },
       plugins: {
         legend: { display: false },
@@ -73,6 +84,11 @@ function renderSoulTally(canvasId, weekMondayIso) {
           backgroundColor: colors.tooltipBg,
           titleColor: colors.tooltipText,
           bodyColor: colors.tooltipText,
+          borderColor: colors.tooltipBorder,
+          borderWidth: 1,
+          titleFont: { family: DEFAULT_FONT, weight: '600' },
+          bodyFont: { family: DEFAULT_FONT },
+          padding: 10,
           callbacks: { label: (ctx) => `${ctx.parsed.x} / 7 days` },
         },
       },
@@ -91,7 +107,7 @@ function renderTrend(canvasId, weeks, items, weeklyHoursByWeek) {
     label: item.name,
     data: weeks.map(w => (weeklyHoursByWeek[w] && weeklyHoursByWeek[w][item.id]) || 0),
     backgroundColor: colorForIndex(idx),
-    borderRadius: 4,
+    borderRadius: 2,
     stack: 'hours',
   }));
 
@@ -105,16 +121,19 @@ function renderTrend(canvasId, weeks, items, weeklyHoursByWeek) {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        x: { stacked: true, grid: { display: false }, ticks: { color: colors.text } },
-        y: { stacked: true, grid: { color: colors.grid }, ticks: { color: colors.text }, beginAtZero: true,
-             title: { display: true, text: 'Hours', color: colors.text } },
+        x: { stacked: true, grid: { display: false }, ticks: commonScale(colors) },
+        y: { stacked: true, grid: { color: colors.grid }, ticks: commonScale(colors), beginAtZero: true,
+             title: { display: true, text: 'Hours', color: colors.text, font: { family: DEFAULT_FONT, size: 11 } } },
       },
       plugins: {
-        legend: { position: 'bottom', labels: { color: colors.text, usePointStyle: true, padding: 12 } },
+        legend: { position: 'bottom', labels: { color: colors.text, usePointStyle: true, padding: 12, font: { family: DEFAULT_FONT, size: 11 } } },
         tooltip: {
           backgroundColor: colors.tooltipBg,
           titleColor: colors.tooltipText,
           bodyColor: colors.tooltipText,
+          borderColor: colors.tooltipBorder,
+          borderWidth: 1,
+          padding: 10,
           callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} h` },
         },
       },
@@ -142,13 +161,13 @@ function renderExerciseLine(canvasId, weeks, weeklyCounts, target) {
           label: 'Exercise days',
           data,
           borderColor: colors.floor,
-          backgroundColor: 'rgba(207, 168, 123, 0.12)',
+          backgroundColor: 'rgba(184, 151, 90, 0.12)',
           fill: true,
           tension: 0.35,
-          borderWidth: 3,
+          borderWidth: 2.5,
           pointBackgroundColor: colors.floor,
-          pointRadius: 5,
-          pointHoverRadius: 7,
+          pointRadius: 4,
+          pointHoverRadius: 6,
         },
         {
           label: `Target (${target}/wk)`,
@@ -166,15 +185,18 @@ function renderExerciseLine(canvasId, weeks, weeklyCounts, target) {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        x: { grid: { display: false }, ticks: { color: colors.text } },
-        y: { beginAtZero: true, max: 7, grid: { color: colors.grid }, ticks: { color: colors.text, stepSize: 1 } },
+        x: { grid: { display: false }, ticks: commonScale(colors) },
+        y: { beginAtZero: true, max: 7, grid: { color: colors.grid }, ticks: { ...commonScale(colors), stepSize: 1 } },
       },
       plugins: {
-        legend: { position: 'bottom', labels: { color: colors.text, usePointStyle: true, padding: 12 } },
+        legend: { position: 'bottom', labels: { color: colors.text, usePointStyle: true, padding: 12, font: { family: DEFAULT_FONT, size: 11 } } },
         tooltip: {
           backgroundColor: colors.tooltipBg,
           titleColor: colors.tooltipText,
           bodyColor: colors.tooltipText,
+          borderColor: colors.tooltipBorder,
+          borderWidth: 1,
+          padding: 10,
         },
       },
     },
