@@ -1,4 +1,10 @@
-"""Initial seed for Self-Buckets — canonical bucket contents from buckets_strategy.md."""
+"""Initial seed for Self-Buckets — generic bucket framework structure.
+
+This is a template seed for the bucket framework (Bucket 1/2/3 + Floor + Habit).
+The framework comes from the public "Career Strategy For People With Too Many
+Interests" video by Knowspire. Personalize by editing items in the UI after
+first run — your data lives in `data/self_buckets.db`, which is gitignored.
+"""
 from __future__ import annotations
 
 import sqlite3
@@ -12,46 +18,32 @@ SEED_BUCKETS: list[dict] = [
 ]
 
 # (kind, name, target_hours_per_week, target_times_per_week, notes, is_active)
+# Replace these placeholders with your own items via the Buckets page in the app.
 SEED_ITEMS: list[tuple[str, str, float | None, int | None, str, bool]] = [
     # Anchor — gets 80% of focused energy
-    ("anchor", "Master's + AI", 24.0, None,
-     "The credential + AI specialization. Master's = WFH lifestyle ticket; AI = the part you actually love.", True),
+    ("anchor", "Main career skill", 24.0, None,
+     "Your bill-paying skill. Already somewhat good at, real demand, you don't hate it.", True),
 
     # Soul — Bucket 2, unmonetized
-    ("soul", "Drawing / Painting", None, None,
-     "Inherited from your art-teacher father. Peace-level. Available at home.", True),
-    ("soul", "Reading", None, None,
-     "Fundamental trait. Already a natural habit.", True),
-    ("soul", "Singing / Karaoke", None, None,
-     "No tools, no effort, at home. Don't worry about voice quality.", True),
-    ("soul", "Cooking", None, None,
-     "Peace + serves daily life.", True),
-    ("soul", "Housekeeping", None, None,
-     "Stress-reset ritual, not a chore.", True),
-    ("soul", "Video Game (turn-based, unnamed)", 2.0, None,
-     "Keystone creative dream. No monetization pressure. 2 hrs/week. "
-     "Drops to 'ideas only' during Master's crunch weeks.", True),
+    ("soul", "Soul activity A", None, None,
+     "A hobby you do because it makes you feel alive. Don't try to monetize.", True),
+    ("soul", "Soul activity B", None, None,
+     "Another unmonetized hobby. Available without tools.", True),
+    ("soul", "Creative side project", 2.0, None,
+     "A creative dream — no monetization expectation. Capped time slot, falls back during crunch weeks.", True),
 
     # Curiosity — Bucket 3, on the shelf, inactive by default
-    ("curiosity", "Music / Instruments", None, None,
-     "Not your path (your own assessment). Requires too much practice for the joy.", False),
-    ("curiosity", "Trekking", None, None,
-     "Needs company / time / money you don't have right now.", False),
-    ("curiosity", "Board Game (standalone)", None, None,
-     "Energy redirected to the video game keystone.", False),
-    ("curiosity", "Trade Bot (algorithmic markets)", None, None,
-     "Dream alive; AlgoTradingBot abandoned 2026-05-29 (understood <5% of trading domain). "
-     "Re-entry path: learn trading fundamentals first.", False),
-    ("curiosity", "Shiba Inu / pet", None, None,
-     "Post-Master's, post-stability. 15-year commitment, deserves real bandwidth.", False),
+    ("curiosity", "Curiosity item A", None, None,
+     "Something you're curious about but not investing in right now. Not now, not never.", False),
+    ("curiosity", "Curiosity item B", None, None,
+     "Another shelved interest with a clear re-entry path when life conditions change.", False),
 
     # Floor — non-negotiable health minimum
     ("floor", "Exercise", None, 3,
-     "3 times per week, 30 min minimum. Structure not motivation. "
-     "The reward is the absence of guilt and avoided health debt.", True),
+     "3 times per week minimum. Structure not motivation. The reward is the absence of guilt and avoided health debt.", True),
 
     # Habit — automated, out of daily flow
-    ("habit", "Long-term stocks (index funds)", None, None,
+    ("habit", "Long-term investing", None, None,
      "~30 min/month. Auto-invest into low-cost index funds. Not a competing interest, a discipline.", True),
 ]
 

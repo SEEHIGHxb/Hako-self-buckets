@@ -1,8 +1,18 @@
 .venv/
+streamlit/.venv/
 __pycache__/
 *.pyc
 data/*.db
 data/*.db-journal
+streamlit/data/*.db
+streamlit/data/*.db-journal
 .streamlit/secrets.toml
 .pytest_cache/
 .DS_Store
+node_modules/
+
+# Local dev artifacts (machine-specific)
+.claude/launch.json
+smoke_stdout.log
+smoke_stderr.log
+*.log

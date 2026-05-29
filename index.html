@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Hako — Self-Buckets</title>
+
+  <!-- Inline SVG favicon: green box -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%234d9c4e'/><text x='32' y='44' font-family='Noto Serif JP, serif' font-size='38' font-weight='700' text-anchor='middle' fill='white'>%E7%AE%B1</text></svg>">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e381b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Hako">
+
+  <!-- Description for sharing -->
+  <meta name="description" content="Hako — a personal life-strategy tracker built around the three-bucket framework. Sibling app to Midori.">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="theme-dark">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div id="appContainer">
+
+    <!-- ============================ SIDEBAR ============================ -->
+    <aside id="sidebar">
+      <div>
+        <div class="brand">
+          <div class="brand-logo">箱</div>
+          <div class="brand-text">
+            <div class="brand-name">Hako</div>
+            <span class="brand-sub">Self-Buckets</span>
+          </div>
+        </div>
+
+        <nav>
+          <ul>
+            <li>
+              <a class="nav-link active" data-tab="home">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Home</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-tab="buckets">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Buckets</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-tab="daily">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                <span>Daily Check</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-tab="dashboard">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-tab="reflection">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Reflection</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" data-tab="settings">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" id="themeToggleBtn">
+          <span id="themeToggleIcon"></span>
+          <span id="themeToggleText">Light Mode</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ============================ MAIN ============================ -->
+    <main>
+      <header class="top-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="mobile-menu-btn" id="mobileMenuToggle" aria-label="Toggle menu">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <h1 id="pageTitle">Home</h1>
+        </div>
+        <div class="header-controls">
+          <span class="date-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span id="todayDisplay">—</span>
+          </span>
+        </div>
+      </header>
+
+      <!-- =================== TAB: HOME =================== -->
+      <section id="tab-home" class="tab-content active">
+        <p class="section-sub" id="homeSubtitle">
+          Strategy isn't a poster on the wall — it's what shows up in your week.
+        </p>
+
+        <div class="grid-3" id="homeMetrics">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div style="margin-top: 30px;">
+          <h2 style="font-size: 18px; margin-bottom: 14px;">Soul stuff today</h2>
+          <div class="checkbox-grid" id="homeSoulGrid">
+            <!-- Populated dynamically -->
+          </div>
+          <p class="section-sub" style="margin-top: 12px; font-size: 12px;">Tap to log today directly, or use Daily Check for hours + notes.</p>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <h2 style="font-size: 18px; margin-bottom: 14px;">Last reflection</h2>
+          <div id="homeLastReflection"></div>
+        </div>
+      </section>
+
+      <!-- =================== TAB: BUCKETS =================== -->
+      <section id="tab-buckets" class="tab-content">
+        <div class="section-header">
+          <h2>Buckets</h2>
+        </div>
+        <p class="section-sub">Your living categorization. Edit names, targets, notes, or active flag. Add new items per bucket.</p>
+        <div id="bucketsContainer"></div>
+      </section>
+
+      <!-- =================== TAB: DAILY CHECK =================== -->
+      <section id="tab-daily" class="tab-content">
+        <div class="section-header">
+          <h2>Daily Check-in</h2>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="form-row" style="margin-bottom: 4px;">
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="dailyDate">Date</label>
+              <input type="date" id="dailyDate" class="form-control">
+            </div>
+            <div class="input-group" style="margin-bottom: 0; justify-content: flex-end;">
+              <label>&nbsp;</label>
+              <span id="dailyDateLong" style="padding: 10px 0; font-size: 14px; color: var(--text-muted);"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="dailyHoursContainer"></div>
+        <div id="dailyBinaryContainer"></div>
+
+        <div class="card" style="margin-top: 20px;">
+          <div class="input-group" style="margin-bottom: 0;">
+            <label for="dailyNote">Day note</label>
+            <textarea id="dailyNote" class="form-control" placeholder="How was the day?"></textarea>
+          </div>
+          <button class="btn" id="dailySaveBtn" style="margin-top: 14px;">Save day</button>
+          <span id="dailySaveStatus" style="margin-left: 12px; color: var(--green-mint); font-size: 13px;"></span>
+        </div>
+
+        <div style="margin-top: 28px;">
+          <h3 style="font-size: 16px; margin-bottom: 8px;">Recent 7 days</h3>
+          <div id="recentTableWrap"></div>
+        </div>
+      </section>
+
+      <!-- =================== TAB: DASHBOARD =================== -->
+      <section id="tab-dashboard" class="tab-content">
+        <div class="section-header">
+          <h2>Dashboard</h2>
+          <span class="date-badge" id="dashboardWeekBadge">—</span>
+        </div>
+
+        <div class="grid-3" id="dashboardMetrics"></div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h3 style="font-size: 16px; margin-bottom: 14px;">Soul stuff — this week tally</h3>
+          <div class="chart-wrap">
+            <canvas id="soulTallyCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h3 style="font-size: 16px; margin-bottom: 14px;">Trend — last <span id="lookbackLabel">8</span> weeks</h3>
+          <div class="chart-wrap tall">
+            <canvas id="trendCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h3 style="font-size: 16px; margin-bottom: 14px;">Exercise — weekly count</h3>
+          <div class="chart-wrap">
+            <canvas id="exerciseCanvas"></canvas>
+          </div>
+        </div>
+
+        <div id="driftBannerContainer"></div>
+      </section>
+
+      <!-- =================== TAB: REFLECTION =================== -->
+      <section id="tab-reflection" class="tab-content">
+        <div class="section-header">
+          <h2>Weekly Reflection</h2>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="input-group" style="margin-bottom: 0;">
+            <label for="reflectionWeekInput">Reflection for week starting (Monday)</label>
+            <input type="date" id="reflectionWeekInput" class="form-control">
+            <span id="reflectionWeekLabel" style="font-size: 13px; color: var(--text-muted); margin-top: 6px;"></span>
+          </div>
+        </div>
+
+        <div id="reflectionPromptsContainer"></div>
+        <button class="btn" id="reflectionSaveBtn">Save reflection</button>
+        <span id="reflectionSaveStatus" style="margin-left: 12px; color: var(--green-mint); font-size: 13px;"></span>
+
+        <div style="margin-top: 32px;">
+          <h3 style="font-size: 16px; margin-bottom: 14px;">Past reflections</h3>
+          <div id="pastReflectionsContainer"></div>
+        </div>
+      </section>
+
+      <!-- =================== TAB: SETTINGS =================== -->
+      <section id="tab-settings" class="tab-content">
+        <div class="section-header">
+          <h2>Settings</h2>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 10px;">About Hako</h3>
+          <p style="font-size: 13px; line-height: 1.6; color: var(--text-muted);">
+            Hako (箱) is a personal life-strategy tracker built around the three-bucket framework
+            from <a href="https://www.youtube.com/watch?v=Jq-3EtFDjbs" target="_blank" rel="noopener" style="color: var(--green-mint);">this video by Knowspire</a>.
+            Sibling app to <a href="https://seehighxb.github.io/Midori-ledger/" target="_blank" rel="noopener" style="color: var(--green-mint);">Midori</a>.
+          </p>
+          <p style="font-size: 13px; line-height: 1.6; color: var(--text-muted); margin-top: 8px;">
+            All your data lives in your browser (LocalStorage). Nothing leaves your device. Clear your
+            browser data to reset, or use the buttons below to export/import.
+          </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 10px;">Data portability</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Export your buckets, logs, and reflections to a JSON file, or restore from a backup.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-secondary btn" id="exportBtn">Export Backup JSON</button>
+            <button class="btn-secondary btn" id="importBtn">Import Backup JSON</button>
+            <input type="file" id="importFileInput" accept=".json" style="display:none;">
+          </div>
+        </div>
+
+        <div class="card" style="border: 1px solid rgba(224, 122, 95, 0.3);">
+          <h3 style="font-size: 16px; margin-bottom: 10px; color: var(--autumn-terracotta);">Reset</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Wipe all stored data and reseed the bucket structure. This cannot be undone.</p>
+          <button class="btn btn-danger" id="resetBtn">Reset all data</button>
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 10px;">Version</h3>
+          <div style="font-size: 13px; line-height: 1.7;">
+            <div><strong>App:</strong> Hako — Self-Buckets</div>
+            <div><strong>Version:</strong> 1.0.0 (Static PWA)</div>
+            <div><strong>Storage:</strong> Browser LocalStorage</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============================ MODALS ============================ -->
+  <div class="modal-overlay" id="itemModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 id="itemModalTitle">Add Item</h3>
+        <button class="modal-close" data-close-modal>
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form id="itemForm">
+        <input type="hidden" id="itemFormId">
+        <input type="hidden" id="itemFormKind">
+
+        <div class="input-group">
+          <label for="itemFormName">Name</label>
+          <input type="text" id="itemFormName" class="form-control" required>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label for="itemFormHours">Hours per week (target)</label>
+            <input type="number" step="0.5" min="0" id="itemFormHours" class="form-control" placeholder="Leave blank for binary item">
+          </div>
+          <div class="input-group">
+            <label for="itemFormTimes">Times per week (target)</label>
+            <input type="number" step="1" min="0" id="itemFormTimes" class="form-control" placeholder="For floor items">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="itemFormNotes">Notes</label>
+          <textarea id="itemFormNotes" class="form-control" placeholder="Optional context"></textarea>
+        </div>
+
+        <div class="input-group">
+          <label class="checkbox-tile" style="display: inline-flex; cursor: pointer;">
+            <input type="checkbox" id="itemFormActive" checked>
+            <span>Active (appears in Daily Check)</span>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 18px;">
+          <button type="button" class="btn-secondary btn" id="itemFormDeleteBtn" style="display: none;">Delete</button>
+          <div style="flex: 1;"></div>
+          <button type="submit" class="btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================ SCRIPTS ============================ -->
+  <script src="js/state.js"></script>
+  <script src="js/time-math.js"></script>
+  <script src="js/repository.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW register failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
